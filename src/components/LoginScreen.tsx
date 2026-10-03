@@ -18,6 +18,16 @@ interface BackgroundOption {
 
 const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
   {
+    id: 'mha',
+    title: 'My Hero Academia',
+    url: '/backgrounds/bg_mha_916.jpg',
+  },
+  {
+    id: 'death_note',
+    title: 'Death Note',
+    url: '/backgrounds/bg_dn_916.jpg',
+  },
+  {
     id: 'jujutsu',
     title: 'Jujutsu Kaisen',
     url: '/backgrounds/bg_jujutsu_916.jpg',
