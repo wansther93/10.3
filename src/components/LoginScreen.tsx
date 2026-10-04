@@ -20,112 +20,159 @@ const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
   {
     id: 'aot',
     title: 'Attack on Titan',
-    url: '/backgrounds/bg_aot_916.jpg',
+    url: '/backgrounds/bg_aot_916.webp',
   },
   {
     id: 'sololeveling',
     title: 'Solo Leveling',
-    url: '/backgrounds/bg_sololeveling_916.jpg',
+    url: '/backgrounds/bg_sololeveling_916.webp',
   },
   {
     id: 'overlord',
     title: 'Overlord',
-    url: '/backgrounds/bg_overlord_916.jpg',
+    url: '/backgrounds/bg_overlord_916.webp',
   },
   {
     id: 'shangrila',
     title: 'Shangri-La Frontier',
-    url: '/backgrounds/bg_shangrila_916.jpg',
+    url: '/backgrounds/bg_shangrila_916.webp',
   },
   {
     id: 'rezero',
     title: 'Re:ZERO',
-    url: '/backgrounds/bg_rezero_916.jpg',
+    url: '/backgrounds/bg_rezero_916.webp',
   },
   {
     id: 'mushokutensei',
     title: 'Mushoku Tensei',
-    url: '/backgrounds/bg_mushokutensei_916.jpg',
+    url: '/backgrounds/bg_mushokutensei_916.webp',
   },
   {
     id: 'opm',
     title: 'One-Punch Man',
-    url: '/backgrounds/bg_opm_916.jpg',
+    url: '/backgrounds/bg_opm_916.webp',
   },
   {
     id: 'mobpsycho',
     title: 'Mob Psycho 100',
-    url: '/backgrounds/bg_mobpsycho_916.jpg',
+    url: '/backgrounds/bg_mobpsycho_916.webp',
   },
   {
     id: 'sxf',
     title: 'Spy x Family',
-    url: '/backgrounds/bg_sxf_916.jpg',
+    url: '/backgrounds/bg_sxf_916.webp',
   },
   {
     id: 'sailor_moon',
     title: 'Sailor Moon',
-    url: '/backgrounds/bg_sailor_916.jpg',
+    url: '/backgrounds/bg_sailor_916.webp',
   },
   {
     id: 'another',
     title: 'Another',
-    url: '/backgrounds/bg_another_916.jpg',
+    url: '/backgrounds/bg_another_916.webp',
   },
   {
     id: 'black_clover',
     title: 'Black Clover',
-    url: '/backgrounds/bg_bclover_916.jpg',
+    url: '/backgrounds/bg_bclover_916.webp',
   },
   {
     id: 'berserk',
     title: 'Berserk',
-    url: '/backgrounds/bg_berserk_916.jpg',
+    url: '/backgrounds/bg_berserk_916.webp',
   },
   {
     id: 'mha',
     title: 'My Hero Academia',
-    url: '/backgrounds/bg_mha_916.jpg',
+    url: '/backgrounds/bg_mha_916.webp',
   },
   {
     id: 'death_note',
     title: 'Death Note',
-    url: '/backgrounds/bg_dn_916.jpg',
+    url: '/backgrounds/bg_dn_916.webp',
   },
   {
     id: 'jujutsu',
     title: 'Jujutsu Kaisen',
-    url: '/backgrounds/bg_jujutsu_916.jpg',
+    url: '/backgrounds/bg_jujutsu_916.webp',
   },
   {
     id: 'demon_slayer',
     title: 'Demon Slayer',
-    url: '/backgrounds/bg_demonslayer_916.jpg',
+    url: '/backgrounds/bg_demonslayer_916.webp',
   },
   {
     id: 'konosuba',
     title: 'Konosuba',
-    url: '/backgrounds/bg_konosuba_916_1791055490732.jpg',
+    url: '/backgrounds/bg_konosuba_916_1791055490732.webp',
   },
   {
     id: 'frieren',
     title: 'Frieren',
-    url: '/backgrounds/bg_frieren_v2_1791052988041.jpg',
+    url: '/backgrounds/bg_frieren_v2_1791052988041.webp',
   },
   {
     id: 'one_piece',
     title: 'One Piece',
-    url: '/backgrounds/bg_op_goingmerry_1791051664914.jpg',
+    url: '/backgrounds/bg_op_goingmerry_1791051664914.webp',
   },
   {
     id: 'tensura',
     title: 'Rimuru',
-    url: '/backgrounds/bg_slime_v2_1791015470709.jpg',
+    url: '/backgrounds/bg_slime_v2_1791015470709.webp',
   },
 ];
 
+const RECENT_BGS_KEY = 'wanime_recent_backgrounds_v1';
+const MAX_RECENT_HISTORY = 14;
+
+function selectRandomBackground(): BackgroundOption {
+  if (typeof window === 'undefined') {
+    return AVAILABLE_BACKGROUNDS[0];
+  }
+
+  let recentIds: string[] = [];
+  try {
+    const stored = localStorage.getItem(RECENT_BGS_KEY);
+    if (stored) {
+      recentIds = JSON.parse(stored);
+      if (!Array.isArray(recentIds)) recentIds = [];
+    }
+  } catch {
+    recentIds = [];
+  }
+
+  // Filter out recent ones
+  let eligible = AVAILABLE_BACKGROUNDS.filter(bg => !recentIds.includes(bg.id));
+
+  // If pool is exhausted or too small, trim history to recycle older ones
+  if (eligible.length === 0) {
+    recentIds = recentIds.slice(-4);
+    eligible = AVAILABLE_BACKGROUNDS.filter(bg => !recentIds.includes(bg.id));
+  }
+
+  if (eligible.length === 0) {
+    eligible = AVAILABLE_BACKGROUNDS;
+  }
+
+  // Pick one at random
+  const chosenIndex = Math.floor(Math.random() * eligible.length);
+  const chosen = eligible[chosenIndex];
+
+  // Save new choice in history
+  try {
+    const updatedHistory = [...recentIds.filter(id => id !== chosen.id), chosen.id].slice(-MAX_RECENT_HISTORY);
+    localStorage.setItem(RECENT_BGS_KEY, JSON.stringify(updatedHistory));
+  } catch {
+    // Ignore storage issues
+  }
+
+  return chosen;
+}
+
 export const LoginScreen: React.FC<LoginScreenProps> = () => {
-  const [currentBgIndex, setCurrentBgIndex] = useState(0); // Starts with Konosuba for testing
+  const [currentBg] = useState<BackgroundOption>(() => selectRandomBackground());
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isUnauthorizedDomain, setIsUnauthorizedDomain] = useState(false);
@@ -189,9 +236,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
       <div className="absolute inset-0 bg-black flex justify-center items-center overflow-hidden pointer-events-none select-none">
         <div className="relative h-full w-full sm:max-w-[56.25vh] flex justify-center items-center overflow-hidden">
           <img
-            key={AVAILABLE_BACKGROUNDS[currentBgIndex].id}
-            src={AVAILABLE_BACKGROUNDS[currentBgIndex].url}
-            alt={AVAILABLE_BACKGROUNDS[currentBgIndex].title}
+            key={currentBg.id}
+            src={currentBg.url}
+            alt={currentBg.title}
             className="w-full h-full object-cover object-center transition-all duration-700 ease-out"
           />
 
@@ -209,26 +256,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
       {/* Subtle Top Red Accent Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-sm h-48 bg-red-600/10 blur-[90px] pointer-events-none rounded-full" />
 
-      {/* Top Test Switcher - Discrete indicator to toggle between animes */}
-      <header className="relative z-10 w-full flex justify-center sm:justify-end items-center pt-1 px-1 sm:px-2">
-        <div className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] text-slate-300 font-medium shadow-md max-w-full overflow-x-auto scrollbar-none">
-          <span className="text-slate-400 pl-1 text-[9px] uppercase tracking-wider shrink-0">Tema:</span>
-          {AVAILABLE_BACKGROUNDS.map((bg, idx) => (
-            <button
-              key={bg.id}
-              type="button"
-              onClick={() => setCurrentBgIndex(idx)}
-              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer font-bold whitespace-nowrap shrink-0 ${
-                currentBgIndex === idx
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/10'
-              }`}
-            >
-              {bg.title}
-            </button>
-          ))}
-        </div>
-      </header>
+      {/* Top Header Spacer (Balanced Flex-between spacing) */}
+      <header className="relative z-10 w-full h-4 sm:h-6 pointer-events-none" />
 
       {/* Main Content Area - Compact, Integrated, Free-Floating (No Heavy Box Modal) */}
       <main className="relative z-10 w-full max-w-[270px] sm:max-w-[290px] my-auto flex flex-col items-center text-center px-1">
