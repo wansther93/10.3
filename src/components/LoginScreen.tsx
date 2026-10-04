@@ -23,6 +23,26 @@ const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
     url: '/backgrounds/bg_aot_916.jpg',
   },
   {
+    id: 'sololeveling',
+    title: 'Solo Leveling',
+    url: '/backgrounds/bg_sololeveling_916.jpg',
+  },
+  {
+    id: 'overlord',
+    title: 'Overlord',
+    url: '/backgrounds/bg_overlord_916.jpg',
+  },
+  {
+    id: 'shangrila',
+    title: 'Shangri-La Frontier',
+    url: '/backgrounds/bg_shangrila_916.jpg',
+  },
+  {
+    id: 'rezero',
+    title: 'Re:ZERO',
+    url: '/backgrounds/bg_rezero_916.jpg',
+  },
+  {
     id: 'mushokutensei',
     title: 'Mushoku Tensei',
     url: '/backgrounds/bg_mushokutensei_916.jpg',
