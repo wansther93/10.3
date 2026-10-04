@@ -18,6 +18,31 @@ interface BackgroundOption {
 
 const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
   {
+    id: 'sxf',
+    title: 'Spy x Family',
+    url: '/backgrounds/bg_sxf_916.jpg',
+  },
+  {
+    id: 'sailor_moon',
+    title: 'Sailor Moon',
+    url: '/backgrounds/bg_sailor_916.jpg',
+  },
+  {
+    id: 'another',
+    title: 'Another',
+    url: '/backgrounds/bg_another_916.jpg',
+  },
+  {
+    id: 'black_clover',
+    title: 'Black Clover',
+    url: '/backgrounds/bg_bclover_916.jpg',
+  },
+  {
+    id: 'berserk',
+    title: 'Berserk',
+    url: '/backgrounds/bg_berserk_916.jpg',
+  },
+  {
     id: 'mha',
     title: 'My Hero Academia',
     url: '/backgrounds/bg_mha_916.jpg',
