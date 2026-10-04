@@ -18,6 +18,21 @@ interface BackgroundOption {
 
 const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
   {
+    id: 'mushokutensei',
+    title: 'Mushoku Tensei',
+    url: '/backgrounds/bg_mushokutensei_916.jpg',
+  },
+  {
+    id: 'opm',
+    title: 'One-Punch Man',
+    url: '/backgrounds/bg_opm_916.jpg',
+  },
+  {
+    id: 'mobpsycho',
+    title: 'Mob Psycho 100',
+    url: '/backgrounds/bg_mobpsycho_916.jpg',
+  },
+  {
     id: 'sxf',
     title: 'Spy x Family',
     url: '/backgrounds/bg_sxf_916.jpg',
