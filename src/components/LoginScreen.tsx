@@ -18,6 +18,11 @@ interface BackgroundOption {
 
 const AVAILABLE_BACKGROUNDS: BackgroundOption[] = [
   {
+    id: 'aot',
+    title: 'Attack on Titan',
+    url: '/backgrounds/bg_aot_916.jpg',
+  },
+  {
     id: 'mushokutensei',
     title: 'Mushoku Tensei',
     url: '/backgrounds/bg_mushokutensei_916.jpg',
