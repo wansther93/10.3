@@ -1873,6 +1873,7 @@ export default function App() {
         anime={detailAnime}
         isOpen={!!detailAnime}
         onClose={() => setDetailAnime(null)}
+        isReadOnly={Boolean(detailAnime && user && detailAnime.userId && detailAnime.userId !== user.uid)}
         onEdit={(a) => handleOpenEdit(a)}
         onDelete={(a) => setDeletingAnime(a)}
         onIncrement={handleIncrementEp}

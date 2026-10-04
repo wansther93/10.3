@@ -414,7 +414,12 @@ export const updateAnime = async (
 
   try {
     await updateDoc(animeRef, cleanUpdatePayload);
-  } catch (error) {
+  } catch (error: any) {
+    const errorMsg = error?.message || String(error);
+    if (errorMsg.includes('permission') || errorMsg.includes('insufficient') || error?.code === 'permission-denied') {
+      console.warn(`[updateAnime] Permissão insuficiente para atualizar anime ${animeId} no Firestore (obra de lista pública ou de outro usuário):`, errorMsg);
+      return;
+    }
     console.error('Erro ao atualizar anime no Firestore:', error);
     handleFirestoreError(error, OperationType.UPDATE, `${COLLECTION_NAME}/${animeId}`);
   }

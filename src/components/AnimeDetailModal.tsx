@@ -262,7 +262,7 @@ export const AnimeDetailModal: React.FC<AnimeDetailModalProps> = ({
         if (combinedBanners.length > 0) {
           setBannerGallery(combinedBanners);
           setDynamicBanner(combinedBanners[0]);
-          if (!anime.bannerUrl && anime.id) {
+          if (!isReadOnly && !anime.bannerUrl && anime.id) {
             updateAnime(anime.id, { bannerUrl: combinedBanners[0] }).catch(() => {});
           }
         }

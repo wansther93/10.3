@@ -7,6 +7,7 @@
  */
 
 import type { Anime } from '../types';
+import { auth } from '../lib/firebase';
 import { getAggregatedStreamingLinks, getAggregatedCharacters } from './multiApiAggregatorService';
 import { searchAnimeMetadata, getAnimeRecommendations, type AnimeStreamingLink, type AnimeCharacterItem, type AnimeRecommendationItem } from './jikanService';
 import { fetchAnimeThemesMedia, type AnimeThemeMedia } from './animeThemesService';
@@ -350,7 +351,7 @@ function triggerBackgroundRichDataRevalidation(
  * 4. Salva no armazém compartilhado apenas se contiver dados reais e emite evento de sincronização.
  */
 export async function getOrFetchAnimeRichData(
-  anime: { mal_id?: number; id?: string; title: string; trailerUrl?: string | null; bannerUrl?: string | null },
+  anime: { mal_id?: number; id?: string; title: string; trailerUrl?: string | null; bannerUrl?: string | null; userId?: string },
   forceRefresh = false
 ): Promise<DynamicAnimeRichData> {
   const existing = getPersistedAnimeRichData(anime);
@@ -484,12 +485,23 @@ export async function getOrFetchAnimeRichData(
 
   // Sincroniza campos essenciais no Firestore caso o anime possua ID registrado
   if (anime.id) {
-    const updates: Record<string, unknown> = {};
-    if (!anime.mal_id && malId) updates.mal_id = malId;
-    if (!anime.trailerUrl && resolvedTrailerUrl) updates.trailerUrl = resolvedTrailerUrl;
-    if (!anime.bannerUrl && resolvedBannerUrl) updates.bannerUrl = resolvedBannerUrl;
-    if (Object.keys(updates).length > 0) {
-      updateAnime(anime.id, updates as any).catch(() => {});
+    const currentUid = auth.currentUser?.uid;
+    const currentEmail = auth.currentUser?.email;
+    const isOwner =
+      !anime.userId ||
+      (currentUid && anime.userId === currentUid) ||
+      (currentEmail && (currentEmail === 'lanskyy93@gmail.com' || currentEmail === 'lanskyyai@gmail.com'));
+
+    if (isOwner) {
+      const updates: Record<string, unknown> = {};
+      if (!anime.mal_id && malId) updates.mal_id = malId;
+      if (!anime.trailerUrl && resolvedTrailerUrl) updates.trailerUrl = resolvedTrailerUrl;
+      if (!anime.bannerUrl && resolvedBannerUrl) updates.bannerUrl = resolvedBannerUrl;
+      if (Object.keys(updates).length > 0) {
+        updateAnime(anime.id, updates as any).catch((err) => {
+          console.debug('Atualização de metadados em segundo plano ignorada:', err);
+        });
+      }
     }
   }
 
